@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, Tray, Menu, screen } from 'electron'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import fs from 'node:fs'
@@ -42,8 +42,50 @@ function saveWindowState() {
   }
 }
 
+function keepWindowInBounds() {
+  if (!win) return
+  const bounds = win.getBounds()
+  const display = screen.getDisplayMatching(bounds)
+  const workArea = display.workArea
+
+  let { x, y, width, height } = bounds
+  let modified = false
+
+  // Limit size to work area
+  if (width > workArea.width) {
+    width = workArea.width
+    modified = true
+  }
+  if (height > workArea.height) {
+    height = workArea.height
+    modified = true
+  }
+
+  // Keep within work area boundaries
+  if (x < workArea.x) {
+    x = workArea.x
+    modified = true
+  } else if (x + width > workArea.x + workArea.width) {
+    x = workArea.x + workArea.width - width
+    modified = true
+  }
+
+  if (y < workArea.y) {
+    y = workArea.y
+    modified = true
+  } else if (y + height > workArea.y + workArea.height) {
+    y = workArea.y + workArea.height - height
+    modified = true
+  }
+
+  if (modified) {
+    win.setBounds({ x, y, width, height })
+  }
+}
+
 function createTray() {
-  try {
+// ... existing code ...
+
     const iconName = 'tray-icon.png'
     const iconPath = path.join(VITE_PUBLIC, iconName)
     
@@ -98,9 +140,15 @@ function createWindow() {
     },
   })
 
-  // Save state on move/resize
-  win.on('move', saveWindowState)
-  win.on('resize', saveWindowState)
+  // Save state and keep in bounds on move/resize
+  win.on('move', () => {
+    keepWindowInBounds()
+    saveWindowState()
+  })
+  win.on('resize', () => {
+    keepWindowInBounds()
+    saveWindowState()
+  })
 
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
