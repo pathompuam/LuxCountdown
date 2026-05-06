@@ -23,11 +23,22 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.widget-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
   background-size: cover;
   background-position: center;
-  position: relative;
-  transition: background 0.3s ease;
-  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
 .drag-region {
@@ -180,9 +191,8 @@ body {
   height: 100vh;
   background: #1a1a20;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  overflow-y: auto;
+  flex-direction: column;
+  overflow: hidden;
   padding: 0;
   box-sizing: border-box;
   position: relative;
@@ -190,16 +200,15 @@ body {
 
 .settings-drag-handle {
   width: 100%;
-  height: 35px;
-  margin: 0 0 20px 0;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  height: 38px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   -webkit-app-region: drag;
-  border-radius: 0;
+  flex-shrink: 0;
   transition: background 0.2s;
 }
 
@@ -209,15 +218,16 @@ body {
 
 .settings-drag-handle::after {
   content: '••••••';
-  color: rgba(255, 255, 255, 0.2);
-  letter-spacing: 3px;
-  font-size: 10px;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 4px;
+  font-size: 11px;
 }
 
 .settings-modal.standalone {
   width: 100%;
   max-width: 450px;
-  min-height: 100vh;
+  height: 100vh; /* Force exact viewport height */
+  max-height: 100vh;
   box-shadow: none;
   padding: 0;
   position: relative;
@@ -225,14 +235,28 @@ body {
   border: none;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  overflow: hidden; /* Prevent any modal-level overflow */
+}
+
+.settings-content-scroll {
+  flex: 1; /* Take up all remaining space */
+  overflow-y: auto; /* Scroll only this middle section */
+  padding: 15px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a45 transparent;
+}
+
+.settings-content-scroll::-webkit-scrollbar {
+  width: 6px;
 }
 
 .modal-header, 
 .input-group, 
-hr, 
-.actions {
-  padding-left: 20px;
-  padding-right: 20px;
+hr {
+  padding-left: 25px;
+  padding-right: 25px;
+  box-sizing: border-box; /* Ensure padding doesn't widen elements */
 }
 
 .modal-header {
@@ -252,7 +276,7 @@ hr,
   color: white;
   border: none;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: clamp(0.7rem, 2vw, 0.85rem);
   transition: background 0.2s;
@@ -275,7 +299,7 @@ hr,
   background: #2a2a35;
   border: 1px solid #3a3a45;
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   color: white;
   outline: none;
   min-width: 0;
@@ -286,7 +310,7 @@ hr,
   border: none;
   color: white;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -307,13 +331,13 @@ hr {
   border: none;
   border-top: 1px solid #3a3a45;
   margin: 20px 0;
-  padding: 0; /* Reset padding for hr */
-  width: calc(100% - 40px);
-  margin-left: 20px;
+  padding: 0;
+  width: calc(100% - 50px);
+  margin-left: 25px;
 }
 
 .input-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -321,15 +345,15 @@ hr {
 .input-group label {
   font-size: 0.85rem;
   color: #888;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .input-group input[type="text"],
 .input-group input[type="datetime-local"] {
   background: #2a2a35;
   border: 1px solid #3a3a45;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   color: white;
   outline: none;
   width: 100%;
@@ -346,34 +370,188 @@ hr {
   margin: 0;
 }
 
-.remove-bg {
-  background: #ff4444;
+/* Background Settings UI Refinement - Vertical Layout */
+.bg-type-selector {
+  display: flex;
+  background: #2a2a35;
+  padding: 4px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #3a3a45;
+}
+
+.bg-type-selector button {
+  flex: 1;
+  background: transparent;
   border: none;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  margin-top: 5px;
-  font-size: 0.8rem;
+  color: #888;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bg-type-selector button.active {
+  background: #3a3a45;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bg-settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+}
+
+.bg-preview-large {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #3a3a45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.bg-controls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.image-actions-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.flex-1 {
+  flex: 1;
+  min-width: 0; /* Critical for preventing flex items from overflowing */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-label.primary {
+  background: #4a90e2;
+  color: white;
+  padding: 0 12px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-bottom: 0;
+}
+
+.remove-bg-btn {
+  background: #3a3a45;
+  border: none;
+  color: #ff4444;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0; /* Prevent the trash button from being squished */
+}
+
+.remove-bg-btn:hover {
+  background: #ff4444;
+  color: white;
+}
+
+.opacity-control {
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.opacity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.opacity-header label {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0;
+}
+
+.opacity-header span {
+  font-size: 0.85rem;
+  color: #4a90e2;
+  font-weight: 600;
+}
+
+.opacity-control input[type="range"] {
+  width: 100%;
+  height: 6px;
+  background: #3a3a45;
+  border-radius: 3px;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+.opacity-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #4a90e2;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s, background 0.2s;
+}
+
+.opacity-control input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #357abd;
 }
 
 .actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: auto; /* Push to bottom */
-  padding-bottom: 20px; /* Small gap from bottom edge */
-  padding-top: 20px;
-  flex-wrap: wrap;
+  gap: 12px;
+  padding: 15px 25px;
+  background: #1a1a20;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0; /* Ensure this container never shrinks */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .actions button {
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   flex: 1;
-  min-width: 80px;
+  min-width: 100px;
   display: flex;
   align-items: center;
   justify-content: center;

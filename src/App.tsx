@@ -7,6 +7,9 @@ interface CountdownSettings {
   eventName: string
   targetDate: string
   backgroundImage: string | null
+  backgroundColor: string
+  backgroundOpacity: number
+  backgroundType: 'color' | 'image'
   runOnStartup: boolean
 }
 
@@ -16,6 +19,9 @@ const DEFAULT_PRESETS: CountdownSettings[] = [
     eventName: 'Forza Horizon 6',
     targetDate: '2026-05-19T00:00:00',
     backgroundImage: null,
+    backgroundColor: '#0a0a0f',
+    backgroundOpacity: 0.9,
+    backgroundType: 'color',
     runOnStartup: false
   }
 ]
@@ -25,7 +31,17 @@ function App() {
 
   const [presets, setPresets] = useState<CountdownSettings[]>(() => {
     const saved = localStorage.getItem('countdown-presets')
-    return saved ? JSON.parse(saved) : DEFAULT_PRESETS
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      // Migration for old presets
+      return parsed.map((p: any) => ({
+        ...p,
+        backgroundColor: p.backgroundColor || '#0a0a0f',
+        backgroundOpacity: p.backgroundOpacity ?? 0.9,
+        backgroundType: p.backgroundType || (p.backgroundImage ? 'image' : 'color')
+      }))
+    }
+    return DEFAULT_PRESETS
   })
 
   const [currentPresetId, setCurrentPresetId] = useState<string>(() => {
@@ -127,6 +143,9 @@ function App() {
       eventName: 'New Event',
       targetDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
       backgroundImage: null,
+      backgroundColor: '#0a0a0f',
+      backgroundOpacity: 0.9,
+      backgroundType: 'color',
       runOnStartup: false
     }
     const updatedPresets = [...presets, newPreset]
@@ -179,77 +198,157 @@ function App() {
       <div className="settings-page">
         <div className="settings-modal standalone">
           <div className="settings-drag-handle"></div>
-          <div className="modal-header">
-            <h2>Settings</h2>
-            <button className="new-preset-btn" onClick={createNewPreset}>
-              <Plus size={16} />
-              <span>New Preset</span>
-            </button>
-          </div>
-
-          <div className="input-group">
-            <label>Select Preset</label>
-            <div className="preset-selector">
-              <select 
-                value={tempSettings.id} 
-                onChange={(e) => {
-                  const selected = presets.find(p => p.id === e.target.value)
-                  if (selected) {
-                    setTempSettings(selected)
-                    setCurrentPresetId(selected.id)
-                  }
-                }}
-              >
-                {presets.map(p => (
-                  <option key={p.id} value={p.id}>{p.eventName}</option>
-                ))}
-              </select>
-              <button 
-                className="delete-preset-btn" 
-                onClick={() => deletePreset(tempSettings.id)}
-                disabled={presets.length <= 1}
-                title="Delete preset"
-              >
-                <Trash2 size={16} />
+          <div className="settings-content-scroll">
+            <div className="modal-header">
+              <h2>Settings</h2>
+              <button className="new-preset-btn" onClick={createNewPreset}>
+                <Plus size={16} />
+                <span>New Preset</span>
               </button>
             </div>
-          </div>
 
-          <hr />
+            <div className="input-group">
+              <label>Select Preset</label>
+              <div className="preset-selector">
+                <select 
+                  value={tempSettings.id} 
+                  onChange={(e) => {
+                    const selected = presets.find(p => p.id === e.target.value)
+                    if (selected) {
+                      setTempSettings(selected)
+                      setCurrentPresetId(selected.id)
+                    }
+                  }}
+                >
+                  {presets.map(p => (
+                    <option key={p.id} value={p.id}>{p.eventName}</option>
+                  ))}
+                </select>
+                <button 
+                  className="delete-preset-btn" 
+                  onClick={() => deletePreset(tempSettings.id)}
+                  disabled={presets.length <= 1}
+                  title="Delete preset"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
 
-          <div className="input-group">
-            <label>Event Name</label>
-            <input 
-              type="text" 
-              value={tempSettings.eventName} 
-              onChange={(e) => setTempSettings({ ...tempSettings, eventName: e.target.value })}
-            />
-          </div>
-          <div className="input-group">
-            <label>Target Date & Time</label>
-            <input 
-              type="datetime-local" 
-              value={tempSettings.targetDate} 
-              onChange={(e) => setTempSettings({ ...tempSettings, targetDate: e.target.value })}
-            />
-          </div>
-          <div className="input-group">
-            <label>Background Image</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-            {tempSettings.backgroundImage && (
-              <button className="remove-bg" onClick={() => setTempSettings({ ...tempSettings, backgroundImage: null })}>
-                Remove Background
-              </button>
-            )}
-          </div>
-          <div className="input-group checkbox">
-            <input 
-              type="checkbox" 
-              id="startup"
-              checked={tempSettings.runOnStartup} 
-              onChange={(e) => setTempSettings({ ...tempSettings, runOnStartup: e.target.checked })}
-            />
-            <label htmlFor="startup">Run on startup</label>
+            <hr />
+
+            <div className="input-group">
+              <label>Event Name</label>
+              <input 
+                type="text" 
+                value={tempSettings.eventName} 
+                onChange={(e) => setTempSettings({ ...tempSettings, eventName: e.target.value })}
+              />
+            </div>
+            <div className="input-group">
+              <label>Target Date & Time</label>
+              <input 
+                type="datetime-local" 
+                value={tempSettings.targetDate} 
+                onChange={(e) => setTempSettings({ ...tempSettings, targetDate: e.target.value })}
+              />
+            </div>
+            <div className="input-group">
+              <label>Background Style</label>
+              <div className="bg-type-selector">
+                <button 
+                  className={tempSettings.backgroundType === 'color' ? 'active' : ''} 
+                  onClick={() => setTempSettings({ ...tempSettings, backgroundType: 'color' })}
+                >
+                  Solid Color
+                </button>
+                <button 
+                  className={tempSettings.backgroundType === 'image' ? 'active' : ''} 
+                  onClick={() => setTempSettings({ ...tempSettings, backgroundType: 'image' })}
+                >
+                  Background Image
+                </button>
+              </div>
+
+              <div className="bg-settings-container">
+                <div 
+                  className="bg-preview-large"
+                  style={{
+                    backgroundImage: (tempSettings.backgroundType === 'image' && tempSettings.backgroundImage) ? `url(${tempSettings.backgroundImage})` : 'none',
+                    backgroundColor: tempSettings.backgroundColor,
+                    opacity: tempSettings.backgroundOpacity
+                  }}
+                >
+                  {(tempSettings.backgroundType === 'color' || !tempSettings.backgroundImage) && (
+                    <span className="preview-label">Background Preview</span>
+                  )}
+                </div>
+                
+                <div className="bg-controls-stack">
+                  {tempSettings.backgroundType === 'color' ? (
+                    <div className="color-picker-group">
+                      <input 
+                        type="color" 
+                        id="bgColor"
+                        value={tempSettings.backgroundColor} 
+                        onChange={(e) => setTempSettings({ ...tempSettings, backgroundColor: e.target.value })}
+                      />
+                      <div className="color-info">
+                        <label htmlFor="bgColor">Background Color</label>
+                        <span className="color-hex">{tempSettings.backgroundColor.toUpperCase()}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="image-upload-group">
+                      <div className="image-actions-row">
+                        <input 
+                          type="file" 
+                          id="bgImage"
+                          accept="image/*" 
+                          className="hidden-file-input"
+                          onChange={handleImageUpload} 
+                        />
+                        <label htmlFor="bgImage" className="file-label primary flex-1">
+                          {tempSettings.backgroundImage ? 'Change Image' : 'Upload Image'}
+                        </label>
+                        {tempSettings.backgroundImage && (
+                          <button 
+                            className="remove-bg-btn" 
+                            onClick={() => setTempSettings({ ...tempSettings, backgroundImage: null })}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="opacity-control">
+                    <div className="opacity-header">
+                      <label>Background Opacity</label>
+                      <span>{Math.round(tempSettings.backgroundOpacity * 100)}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0.05" 
+                      max="1.0" 
+                      step="0.05"
+                      value={tempSettings.backgroundOpacity} 
+                      onChange={(e) => setTempSettings({ ...tempSettings, backgroundOpacity: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="input-group checkbox">
+              <input 
+                type="checkbox" 
+                id="startup"
+                checked={tempSettings.runOnStartup} 
+                onChange={(e) => setTempSettings({ ...tempSettings, runOnStartup: e.target.checked })}
+              />
+              <label htmlFor="startup">Run on startup</label>
+            </div>
           </div>
           <div className="actions">
             <button onClick={() => window.close()}>
@@ -266,13 +365,15 @@ function App() {
   }
 
   return (
-    <div 
-      className="widget-container" 
-      style={{ 
-        backgroundImage: settings.backgroundImage ? `url(${settings.backgroundImage})` : 'none',
-        backgroundColor: settings.backgroundImage ? 'transparent' : 'rgba(10, 10, 15, 0.9)'
-      }}
-    >
+    <div className="widget-container">
+      <div 
+        className="widget-bg"
+        style={{ 
+          backgroundImage: (settings.backgroundType === 'image' && settings.backgroundImage) ? `url(${settings.backgroundImage})` : 'none',
+          backgroundColor: settings.backgroundColor,
+          opacity: settings.backgroundOpacity
+        }}
+      />
       <div className="drag-region"></div>
       
       <button className="settings-trigger" onClick={openSettingsWindow}>
