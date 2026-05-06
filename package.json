@@ -37,7 +37,7 @@
       "dist-electron"
     ],
     "win": {
-      "icon": "public/favicon.png",
+      "icon": "public/favicon.ico",
       "target": [
         {
           "target": "nsis",

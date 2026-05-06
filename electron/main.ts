@@ -15,9 +15,23 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 const VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 process.env.VITE_PUBLIC = VITE_PUBLIC
 
-let win: BrowserWindow | null = null
-let settingsWin: BrowserWindow | null = null
-let tray: Tray | null = null
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.show()
+      win.focus()
+    }
+  })
+
+  let win: BrowserWindow | null = null
+  let settingsWin: BrowserWindow | null = null
+  let tray: Tray | null = null
 
 const STORE_PATH = path.join(app.getPath('userData'), 'window-state.json')
 
@@ -84,8 +98,7 @@ function keepWindowInBounds() {
 }
 
 function createTray() {
-// ... existing code ...
-
+  try {
     const iconName = 'tray-icon.png'
     const iconPath = path.join(VITE_PUBLIC, iconName)
     
@@ -240,3 +253,4 @@ app.whenReady().then(() => {
   createTray()
   createWindow()
 })
+}
