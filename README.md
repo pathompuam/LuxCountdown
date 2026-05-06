@@ -59,4 +59,4 @@ npm run build
 - **Styling:** CSS3 (Custom Design)
 
 ---
-Developed with ❤️ by **Lux**
+Developed with ❤️ by **Lux and Gemini(XD)**
