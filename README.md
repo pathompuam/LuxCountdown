@@ -1,4 +1,4 @@
-# ⏳ Lux Countdown
+# <img src="public/favicon.png" width="30" style="vertical-align: middle; margin-right: 10px;"> Lux Countdown
 
 **Lux Countdown** เป็นแอปพลิเคชัน Desktop Widget ที่ออกแบบมาให้เรียบหรู ทันสมัย และช่วยให้คุณไม่พลาดทุกเหตุการณ์สำคัญในชีวิต พัฒนาโดยคุณ **Lux**
 
@@ -7,16 +7,16 @@
   <img src="ref/example2.png" width="250" alt="Settings View" />
 </p>
 
-## ✨ ฟีเจอร์เด่น (Key Features)
+## ฟีเจอร์เด่น (Key Features)
 
 - **Desktop Widget:** ทำงานเป็นวิดเจ็ตลอยอยู่บนหน้าจอ Desktop ไม่เกะกะแถบ Taskbar
 - **Position & Size Memory:** จดจำตำแหน่งและขนาดล่าสุดที่วางไว้ เปิดเครื่องใหม่แอปจะกลับมาอยู่ที่เดิมเป๊ะๆ
 - **Custom Presets:** สร้างและจัดการการนับถอยหลังได้หลายเหตุการณ์พร้อมกัน
 - **Personalized Background:** ใส่รูปภาพพื้นหลังของคุณเองได้ในแต่ละเหตุการณ์
 - **Run on Startup:** ตั้งค่าให้แอปเปิดใช้งานอัตโนมัติทันทีที่เปิดเครื่อง (Windows)
-- **Modern UI:** ไอคอนสวยงามจาก Lucide React และรูปแบบวันที่แบบ `dd/mm/yy` ที่อ่านง่าย
+- **Modern UI:** ไอคอนสวยงามจาก Lucide React และรูปแบบวันที่แบบ dd/mm/yy ที่อ่านง่าย
 
-## 🚀 วิธีการใช้งาน (How to Use)
+## วิธีการใช้งาน (How to Use)
 
 1.  **การลากและวาง:** คุณสามารถคลิกค้างที่ตัววิดเจ็ตเพื่อย้ายตำแหน่งไปวางไว้จุดไหนก็ได้บนหน้าจอ
 2.  **การปรับขนาด:** วางเมาส์ที่ขอบวิดเจ็ตเพื่อลากปรับขนาดตามต้องการ
@@ -29,7 +29,7 @@
         - เปิด/ปิด ระบบ **Run on startup**
 4.  **System Tray:** ไอคอนแอปที่มุมขวาล่างช่วยให้คุณเข้าถึงการตั้งค่าหรือปิดแอปได้ตลอดเวลา
 
-## 🛠 การติดตั้งและพัฒนา (Development)
+## การติดตั้งและพัฒนา (Development)
 
 สำหรับนักพัฒนาที่ต้องการนำไปต่อยอด:
 
@@ -44,7 +44,7 @@ npm run dev
 npm run build
 ```
 
-## 📦 เทคโนโลยีที่ใช้ (Tech Stack)
+## เทคโนโลยีที่ใช้ (Tech Stack)
 
 - **Frontend:** React + TypeScript + Vite
 - **Desktop Framework:** Electron
