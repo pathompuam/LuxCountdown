@@ -1,6 +1,13 @@
 # <img src="public/favicon.png" width="30" style="vertical-align: middle; margin-right: 10px;"> Lux Countdown
 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/pathompuam/LuxCountdown?style=flat-square)](https://github.com/pathompuam/LuxCountdown/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 **Lux Countdown** เป็นแอปพลิเคชัน Desktop Widget ที่ออกแบบมาให้เรียบหรู ทันสมัย และช่วยให้คุณไม่พลาดทุกเหตุการณ์สำคัญในชีวิต พัฒนาโดยคุณ **Lux**
+
+## 📥 ดาวน์โหลด (Download)
+
+คุณสามารถดาวน์โหลดโปรแกรมเวอร์ชันล่าสุดสำหรับ Windows (.exe) ได้ที่หน้า **[Releases](https://github.com/pathompuam/LuxCountdown/releases)**
 
 <p align="center">
   <img src="ref/example1.png" width="350" alt="Main View" />
