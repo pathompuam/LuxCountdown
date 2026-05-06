@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# ⏳ Lux Countdown
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Lux Countdown** เป็นแอปพลิเคชัน Desktop Widget ที่ออกแบบมาให้เรียบหรู ทันสมัย และช่วยให้คุณไม่พลาดทุกเหตุการณ์สำคัญในชีวิต พัฒนาโดยคุณ **Lux**
 
-Currently, two official plugins are available:
+![Lux Countdown Preview](ref/LOGO.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ ฟีเจอร์เด่น (Key Features)
 
-## React Compiler
+- **Desktop Widget:** ทำงานเป็นวิดเจ็ตลอยอยู่บนหน้าจอ Desktop ไม่เกะกะแถบ Taskbar
+- **Position & Size Memory:** จดจำตำแหน่งและขนาดล่าสุดที่วางไว้ เปิดเครื่องใหม่แอปจะกลับมาอยู่ที่เดิมเป๊ะๆ
+- **Custom Presets:** สร้างและจัดการการนับถอยหลังได้หลายเหตุการณ์พร้อมกัน
+- **Personalized Background:** ใส่รูปภาพพื้นหลังของคุณเองได้ในแต่ละเหตุการณ์
+- **Run on Startup:** ตั้งค่าให้แอปเปิดใช้งานอัตโนมัติทันทีที่เปิดเครื่อง (Windows)
+- **Modern UI:** ไอคอนสวยงามจาก Lucide React และรูปแบบวันที่แบบ `dd/mm/yy` ที่อ่านง่าย
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 วิธีการใช้งาน (How to Use)
 
-## Expanding the ESLint configuration
+1.  **การลากและวาง:** คุณสามารถคลิกค้างที่ตัววิดเจ็ตเพื่อย้ายตำแหน่งไปวางไว้จุดไหนก็ได้บนหน้าจอ
+2.  **การปรับขนาด:** วางเมาส์ที่ขอบวิดเจ็ตเพื่อลากปรับขนาดตามต้องการ
+3.  **การตั้งค่า (Settings):**
+    - คลิกที่ไอคอน **ฟันเฟือง (Settings)** บนวิดเจ็ต หรือคลิกขวาที่ไอคอนแอปใน **System Tray** (มุมขวาล่างของจอ)
+    - ในหน้าตั้งค่า คุณสามารถ:
+        - เพิ่มเหตุการณ์ใหม่ (+)
+        - เปลี่ยนชื่อเหตุการณ์และเลือกวันเวลาที่ต้องการ
+        - อัปโหลดรูปภาพพื้นหลัง
+        - เปิด/ปิด ระบบ **Run on startup**
+4.  **System Tray:** ไอคอนแอปที่มุมขวาล่างช่วยให้คุณเข้าถึงการตั้งค่าหรือปิดแอปได้ตลอดเวลา
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 การติดตั้งและพัฒนา (Development)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+สำหรับนักพัฒนาที่ต้องการนำไปต่อยอด:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```bash
+# ติดตั้ง dependencies
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# รันในโหมดพัฒนา (Development)
+npm run dev
+
+# สร้างตัวโปรแกรมสำหรับใช้งาน (Build)
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📦 เทคโนโลยีที่ใช้ (Tech Stack)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Frontend:** React + TypeScript + Vite
+- **Desktop Framework:** Electron
+- **Icons:** Lucide React
+- **Styling:** CSS3 (Custom Design)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+Developed with ❤️ by **Lux**
