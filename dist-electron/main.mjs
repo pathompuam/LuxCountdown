@@ -186,8 +186,38 @@ else {
 			settingsWin?.show();
 		});
 	});
+	ipcMain.on("open-layout-editor", (_event, presetId) => {
+		if (!win || win.isDestroyed()) return;
+		const layoutWin = new BrowserWindow({
+			width: 950,
+			height: 650,
+			title: "Layout Editor",
+			icon: path.join(VITE_PUBLIC, "favicon.png"),
+			autoHideMenuBar: true,
+			backgroundColor: "#1a1a20",
+			show: false,
+			frame: false,
+			resizable: true,
+			webPreferences: {
+				preload: preloadPath,
+				nodeIntegration: false,
+				contextIsolation: true
+			}
+		});
+		const bounds = win.getBounds();
+		const layoutPath = VITE_DEV_SERVER_URL ? `${VITE_DEV_SERVER_URL}?mode=layout&w=${bounds.width}&h=${bounds.height}&presetId=${presetId}` : `file://${path.join(RENDERER_DIST, "index.html")}?mode=layout&w=${bounds.width}&h=${bounds.height}&presetId=${presetId}`;
+		if (VITE_DEV_SERVER_URL) layoutWin.loadURL(layoutPath);
+		else layoutWin.loadFile(path.join(RENDERER_DIST, "index.html"), { query: {
+			mode: "layout",
+			presetId
+		} });
+		layoutWin.once("ready-to-show", () => {
+			layoutWin.show();
+		});
+	});
 	ipcMain.on("settings-updated", () => {
 		if (win && !win.isDestroyed()) win.webContents.send("refresh-settings");
+		if (settingsWin && !settingsWin.isDestroyed()) settingsWin.webContents.send("refresh-settings");
 	});
 	ipcMain.on("set-run-on-startup", (_event, value) => {
 		app.setLoginItemSettings({
