@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url'
 import fs from 'node:fs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const preloadPath = path.join(__dirname, 'preload.mjs')
+const preloadPath = path.join(
+  __dirname,
+  fs.existsSync(path.join(__dirname, 'preload.cjs')) ? 'preload.cjs' : 'preload.mjs'
+)
 
 process.env.APP_ROOT = path.join(__dirname, '..')
 
@@ -276,6 +279,10 @@ ipcMain.on('settings-updated', () => {
 })
 
 ipcMain.on('set-run-on-startup', (_event, value: boolean) => {
+  if (!app.isPackaged) {
+    console.log('Skipping setLoginItemSettings in development mode')
+    return
+  }
   app.setLoginItemSettings({
     openAtLogin: value,
     path: app.getPath('exe'),
@@ -289,6 +296,16 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady().then(() => {
+  if (!app.isPackaged) {
+    try {
+      app.setLoginItemSettings({
+        openAtLogin: false,
+        path: process.execPath,
+      })
+    } catch (e) {
+      console.error('Failed to clear dev login item settings:', e)
+    }
+  }
   createTray()
   createWindow()
 })

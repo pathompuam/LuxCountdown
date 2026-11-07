@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 //#region electron/main.ts
 var __dirname = path.dirname(fileURLToPath(import.meta.url));
-var preloadPath = path.join(__dirname, "preload.mjs");
+var preloadPath = path.join(__dirname, fs.existsSync(path.join(__dirname, "preload.cjs")) ? "preload.cjs" : "preload.mjs");
 process.env.APP_ROOT = path.join(__dirname, "..");
 var VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 var MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
@@ -220,6 +220,10 @@ else {
 		if (settingsWin && !settingsWin.isDestroyed()) settingsWin.webContents.send("refresh-settings");
 	});
 	ipcMain.on("set-run-on-startup", (_event, value) => {
+		if (!app.isPackaged) {
+			console.log("Skipping setLoginItemSettings in development mode");
+			return;
+		}
 		app.setLoginItemSettings({
 			openAtLogin: value,
 			path: app.getPath("exe")
@@ -229,6 +233,14 @@ else {
 		if (process.platform !== "darwin") app.quit();
 	});
 	app.whenReady().then(() => {
+		if (!app.isPackaged) try {
+			app.setLoginItemSettings({
+				openAtLogin: false,
+				path: process.execPath
+			});
+		} catch (e) {
+			console.error("Failed to clear dev login item settings:", e);
+		}
 		createTray();
 		createWindow();
 	});
